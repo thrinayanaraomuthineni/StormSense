@@ -1,0 +1,331 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  :root {
+    --font-display: 'Outfit', system-ui, sans-serif;
+    --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
+    --ss-bg-main: #283744;
+    --ss-bg-secondary: #344655;
+    --ss-bg-panel: #3B5061;
+    --ss-bg-card: #43596A;
+    --ss-border: #60788A;
+    --ss-border-subtle: #52697A;
+    --ss-primary: #70A9CF;
+    --ss-teal: #55B7B0;
+    --ss-ink: #E5EDF3;
+    --ss-ink-secondary: #AABBC9;
+    --ss-muted: #8FA3B3;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background-color: var(--ss-bg-main);
+    color: var(--ss-ink);
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+
+  .font-mono, .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  select option {
+    background-color: #344655;
+    color: #E5EDF3;
+  }
+}
+
+/* Layered atmospheric command centre surface utilities */
+.ss-atmospheric-backdrop {
+  background-color: #283744;
+  background-image:
+    radial-gradient(ellipse 68% 52% at 14% 12%, rgba(112, 169, 207, 0.14) 0%, transparent 62%),
+    radial-gradient(ellipse 60% 48% at 86% 22%, rgba(85, 183, 176, 0.11) 0%, transparent 60%),
+    radial-gradient(ellipse 75% 50% at 50% 96%, rgba(52, 70, 85, 0.65) 0%, transparent 68%),
+    linear-gradient(180deg, #283744 0%, #2D3E4C 50%, #344655 100%);
+}
+
+.ss-card {
+  background-color: rgba(67, 89, 106, 0.88);
+  border: 1px solid #60788A;
+  box-shadow: 0 10px 26px rgba(15, 24, 32, 0.22), inset 0 1px 0 rgba(229, 237, 243, 0.06);
+}
+
+.ss-panel {
+  background-color: rgba(59, 80, 97, 0.9);
+  border: 1px solid #60788A;
+  box-shadow: 0 8px 20px rgba(15, 24, 32, 0.2);
+}
+
+/* Custom atmospheric blue-grey scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #283744;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #52697A;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #70A9CF;
+}
+
+/* Atmospheric & radar animations (GPU-composited) */
+@keyframes ss-radar-sweep {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes ss-cloud-drift-slow {
+  0% {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+    opacity: 0.42;
+  }
+  50% {
+    transform: translate3d(4%, 2%, 0) scale(1.06);
+    opacity: 0.62;
+  }
+  100% {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+    opacity: 0.42;
+  }
+}
+
+@keyframes ss-cloud-drift-reverse {
+  0% {
+    transform: translate3d(3%, 2%, 0) scale(1.03);
+    opacity: 0.35;
+  }
+  50% {
+    transform: translate3d(-4%, -2%, 0) scale(0.98);
+    opacity: 0.56;
+  }
+  100% {
+    transform: translate3d(3%, 2%, 0) scale(1.03);
+    opacity: 0.35;
+  }
+}
+
+@keyframes ss-isobar-flow {
+  0% {
+    stroke-dashoffset: 0;
+  }
+  100% {
+    stroke-dashoffset: -120;
+  }
+}
+
+@keyframes ss-weather-pulse {
+  0%, 100% {
+    transform: scale(0.96);
+    opacity: 0.55;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+@keyframes ss-rain-fall {
+  0% {
+    transform: translateY(-14px);
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.8;
+  }
+  85% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translateY(34px);
+    opacity: 0;
+  }
+}
+
+@keyframes ss-incident-ring {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.82;
+  }
+  70% {
+    transform: scale(2.15);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.15);
+    opacity: 0;
+  }
+}
+
+@keyframes ss-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ss-shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.ss-radar-sweep {
+  animation: ss-radar-sweep 7s linear infinite;
+  transform-origin: center;
+}
+
+.ss-cloud-drift {
+  animation: ss-cloud-drift-slow 24s ease-in-out infinite;
+}
+
+.ss-cloud-drift-alt {
+  animation: ss-cloud-drift-reverse 30s ease-in-out infinite;
+}
+
+.ss-isobar-flow {
+  stroke-dasharray: 10 14;
+  animation: ss-isobar-flow 18s linear infinite;
+}
+
+.ss-weather-pulse {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ss-weather-pulse 4.2s ease-in-out infinite;
+}
+
+.ss-rain-drop {
+  animation: ss-rain-fall 1.3s linear infinite;
+}
+
+.ss-page-enter {
+  animation: ss-page-enter 220ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.ss-skeleton {
+  background: linear-gradient(90deg, #344655 25%, #3B5061 50%, #344655 75%);
+  background-size: 200% 100%;
+  animation: ss-shimmer 1.8s ease-in-out infinite;
+}
+
+/* Active GIS Incident Marker Pulse */
+.incident-marker-wrap {
+  position: relative;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.incident-marker-pulse {
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid #E36D6D;
+  animation: ss-incident-ring 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+.incident-marker-core {
+  width: 12px;
+  height: 12px;
+  background: #E36D6D;
+  border: 2px solid #E5EDF3;
+  border-radius: 3px;
+  transform: rotate(45deg);
+  box-shadow: 0 2px 8px rgba(15, 24, 32, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ss-radar-sweep,
+  .ss-cloud-drift,
+  .ss-cloud-drift-alt,
+  .ss-isobar-flow,
+  .ss-weather-pulse,
+  .ss-rain-drop,
+  .ss-page-enter,
+  .ss-skeleton,
+  .incident-marker-pulse {
+    animation: none !important;
+  }
+}
+
+/* Leaflet atmospheric slate cartography overrides */
+.leaflet-container {
+  background: #2C3D4B;
+  font-family: var(--font-sans);
+}
+
+.leaflet-tile-pane {
+  filter: invert(90%) hue-rotate(188deg) brightness(86%) contrast(88%) saturate(54%);
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background: #3B5061;
+  color: #E5EDF3;
+  border: 1px solid #60788A;
+  box-shadow: 0 10px 28px rgba(15, 24, 32, 0.45);
+}
+
+.leaflet-popup-close-button {
+  color: #AABBC9 !important;
+}
+
+.leaflet-popup-close-button:hover {
+  color: #E5EDF3 !important;
+}
+
+.leaflet-tooltip {
+  background: #344655;
+  color: #E5EDF3;
+  border: 1px solid #60788A;
+  box-shadow: 0 6px 18px rgba(15, 24, 32, 0.4);
+}
+
+.leaflet-control-zoom a {
+  background-color: #3B5061 !important;
+  color: #E5EDF3 !important;
+  border-color: #60788A !important;
+}
+
+.leaflet-control-zoom a:hover {
+  background-color: #43596A !important;
+  color: #70A9CF !important;
+}
+
+.leaflet-control-attribution {
+  background: rgba(40, 55, 68, 0.85) !important;
+  color: #8FA3B3 !important;
+  font-size: 10px !important;
+}
+
+.leaflet-control-attribution a {
+  color: #70A9CF !important;
+}

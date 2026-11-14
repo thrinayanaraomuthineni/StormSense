@@ -6,3 +6,24 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Ignore generated AI Studio screenshots and artifacts
+.aistudio/artifacts/
+
+# Ignore dependencies and build output
+node_modules/
+dist/
+build/
+
+# Ignore private environment files
+.env
+.env.*
+!.env.example
+.env.local
+
+# Ignore logs
+*.log
+# Local SQLite database files
+data/*.db
+data/*.db-shm
+data/*.db-wal
