@@ -1,0 +1,8 @@
+{
+  "name": "StormSense — Telangana Grid Intelligence",
+  "description": "Predictive weather intelligence, outage risk scoring, interactive GIS mapping, and smart crew dispatch for the Department of Energy, Government of Telangana.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
